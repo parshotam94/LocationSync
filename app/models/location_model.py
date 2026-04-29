@@ -16,10 +16,11 @@ def insert_location(data):
 def get_locations_for_group(group_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
-        SELECT user_id, latitude, longitude, timestamp 
-        FROM locations 
-        WHERE group_id = %s 
-        ORDER BY timestamp ASC
+        SELECT l.user_id, l.latitude, l.longitude, l.timestamp, u.name as user_name
+        FROM locations l
+        JOIN users u ON l.user_id = u.id
+        WHERE l.group_id = %s 
+        ORDER BY l.timestamp ASC
     """, (group_id,))
     locations = cur.fetchall()
     cur.close()

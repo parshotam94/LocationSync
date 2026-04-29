@@ -46,7 +46,7 @@ def group_page(code):
         flash("You are not a member of this group", "error")
         return redirect(url_for('group.dashboard'))
         
-    return render_template("group.html", code=code, group_id=group['id'], user_id=session['user_id'])
+    return render_template("group.html", code=code, group_id=group['id'], user_id=session['user_id'], user_name=session['user_name'])
 
 @group_bp.route("/invite", methods=["POST"])
 @login_required

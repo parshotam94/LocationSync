@@ -8,7 +8,7 @@
     <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 1.5rem;">Group ID: {{ group_id }}</p>
 
     <h4 style="margin-bottom: 1rem; font-size: 1rem;">Invite a Friend</h4>
-    <form method="POST" action="/invite">
+    <form method="POST" action="/invite" style="margin-bottom: 1.5rem;">
         <div class="form-group">
             <input type="email" name="email" placeholder="Friend's Email" required style="padding: 0.5rem; font-size: 0.9rem;">
         </div>
@@ -16,6 +16,11 @@
         <input type="hidden" name="group_code" value="{{ code }}">
         <button type="submit" style="padding: 0.5rem; font-size: 0.9rem;">Send Invite</button>
     </form>
+    
+    <h4 style="margin-bottom: 0.5rem; font-size: 1rem;">Member Distances</h4>
+    <div id="distances-list" style="font-size: 0.9rem; color: #cbd5e1; max-height: 150px; overflow-y: auto;">
+        <!-- Distances will be injected here via JS -->
+    </div>
 </div>
 
 <!-- Scripts -->
@@ -25,6 +30,7 @@
 <script>
     const GROUP_ID = "{{ group_id }}";
     const USER_ID = "{{ user_id }}";
+    const USER_NAME = "{{ user_name }}";
 </script>
 
 <script src="{{ url_for('static', filename='js/socket.js') }}"></script>

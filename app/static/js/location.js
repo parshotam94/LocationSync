@@ -2,6 +2,7 @@ if (navigator.geolocation) {
     navigator.geolocation.watchPosition((pos) => {
         const data = {
             user_id: USER_ID,
+            user_name: USER_NAME,
             group_id: GROUP_ID,
             lat: pos.coords.latitude,
             lng: pos.coords.longitude
