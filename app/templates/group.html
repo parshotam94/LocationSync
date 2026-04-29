@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="map"></div>
+
+<!-- Glassmorphism overlay for group info -->
+<div class="map-overlay">
+    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Group: {{ code }}</h3>
+    <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 1.5rem;">Group ID: {{ group_id }}</p>
+
+    <h4 style="margin-bottom: 1rem; font-size: 1rem;">Invite a Friend</h4>
+    <form method="POST" action="/invite">
+        <div class="form-group">
+            <input type="email" name="email" placeholder="Friend's Email" required style="padding: 0.5rem; font-size: 0.9rem;">
+        </div>
+        <input type="hidden" name="group_id" value="{{ group_id }}">
+        <input type="hidden" name="group_code" value="{{ code }}">
+        <button type="submit" style="padding: 0.5rem; font-size: 0.9rem;">Send Invite</button>
+    </form>
+</div>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+<script>
+    const GROUP_ID = "{{ group_id }}";
+    const USER_ID = "{{ user_id }}";
+</script>
+
+<script src="{{ url_for('static', filename='js/socket.js') }}"></script>
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/location.js') }}"></script>
+
+{% endblock %}

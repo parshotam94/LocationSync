@@ -1,0 +1,48 @@
+CREATE DATABASE IF NOT EXISTS tracker_db;
+USE tracker_db;
+
+CREATE TABLE IF NOT EXISTS users(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100),
+email VARCHAR(100) UNIQUE,
+password VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS `groups`(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100),
+invite_code VARCHAR(10) UNIQUE,
+owner_id INT,
+FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS group_members(
+id INT AUTO_INCREMENT PRIMARY KEY,
+group_id INT,
+user_id INT,
+FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+UNIQUE KEY unique_membership (group_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS invitations(
+id INT AUTO_INCREMENT PRIMARY KEY,
+group_id INT,
+sender_id INT,
+receiver_id INT,
+status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
+FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS locations(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT,
+group_id INT,
+latitude DOUBLE,
+longitude DOUBLE,
+timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE
+);

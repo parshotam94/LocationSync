@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="align-items: flex-start; padding-top: 3rem;">
+    <div class="dashboard-grid">
+        
+        <!-- Left Column: Groups -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div class="dashboard-card">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Your Groups</h3>
+                {% if groups %}
+                    {% for g in groups %}
+                        <div class="list-item">
+                            <span style="font-weight: 600;">{{ g.name }}</span>
+                            <a href="/group/{{ g.invite_code }}" class="btn-small" style="background: var(--primary); text-decoration: none; color: white; border-radius: 6px;">Open Map</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #cbd5e1; font-size: 0.9rem;">You are not in any groups yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="dashboard-card">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Pending Invitations</h3>
+                {% if invites %}
+                    {% for inv in invites %}
+                        <div class="list-item">
+                            <div>
+                                <div style="font-weight: 600;">{{ inv.group_name }}</div>
+                                <div style="font-size: 0.8rem; color: #cbd5e1;">Invited by {{ inv.sender_name }}</div>
+                            </div>
+                            <form method="POST" action="/accept_invite/{{ inv.id }}" style="margin: 0;">
+                                <button type="submit" class="btn-small btn-success" style="border-radius: 6px;">Accept</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #cbd5e1; font-size: 0.9rem;">No pending invitations.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Create Group -->
+        <div>
+            <div class="card" style="margin: 0;">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem; text-align: center;">Create New Group</h3>
+                <form method="POST" action="/create_group">
+                    <div class="form-group">
+                        <label>Group Name</label>
+                        <input type="text" name="name" placeholder="E.g., Weekend Ride" required>
+                    </div>
+                    <button type="submit">Create Group</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
