@@ -1,0 +1,1 @@
+INSERT INTO groups (name,invite_code) VALUES ('Test Group','ABC123');
