@@ -13,6 +13,9 @@ id INT AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100),
 invite_code VARCHAR(10) UNIQUE,
 owner_id INT,
+destination_name VARCHAR(255),
+destination_lat DOUBLE,
+destination_lng DOUBLE,
 FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -45,4 +48,24 @@ longitude DOUBLE,
 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS rides(
+id INT AUTO_INCREMENT PRIMARY KEY,
+group_id INT,
+name VARCHAR(100),
+start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+end_time TIMESTAMP NULL,
+total_distance DOUBLE DEFAULT 0,
+duration_minutes DOUBLE DEFAULT 0,
+avg_speed DOUBLE DEFAULT 0,
+FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS ride_participants(
+ride_id INT,
+user_id INT,
+PRIMARY KEY (ride_id, user_id),
+FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

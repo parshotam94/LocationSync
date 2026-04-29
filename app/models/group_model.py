@@ -1,9 +1,12 @@
 from app.extensions import mysql
 import MySQLdb.cursors
 
-def create_group(name, code, owner_id):
+def create_group(name, code, owner_id, dest_name=None, dest_lat=None, dest_lng=None):
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO `groups` (name, invite_code, owner_id) VALUES (%s,%s,%s)", (name, code, owner_id))
+    cur.execute("""
+        INSERT INTO `groups` (name, invite_code, owner_id, destination_name, destination_lat, destination_lng) 
+        VALUES (%s,%s,%s,%s,%s,%s)
+    """, (name, code, owner_id, dest_name, dest_lat, dest_lng))
     group_id = cur.lastrowid
     cur.execute("INSERT INTO group_members (group_id, user_id) VALUES (%s,%s)", (group_id, owner_id))
     mysql.connection.commit()
@@ -37,3 +40,9 @@ def add_member(group_id, user_id):
         pass # ignore if already member
     finally:
         cur.close()
+
+def remove_member(group_id, user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM group_members WHERE group_id=%s AND user_id=%s", (group_id, user_id))
+    mysql.connection.commit()
+    cur.close()

@@ -3,12 +3,45 @@
 <div id="map"></div>
 
 <!-- Glassmorphism overlay for group info -->
-<div class="map-overlay">
-    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Group: {{ code }}</h3>
-    <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 1.5rem;">Group ID: {{ group_id }}</p>
+<div class="map-overlay" style="max-height: calc(100vh - 100px); overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">{{ group.name }}</h3>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 1.5rem;">Group Code: {{ code }}</p>
+        </div>
+        <form method="POST" action="/leave_group" onsubmit="return confirm('Are you sure you want to leave this group?');">
+            <input type="hidden" name="group_id" value="{{ group_id }}">
+            <button type="submit" style="background: var(--danger); padding: 0.4rem; font-size: 0.8rem; width: auto;">Leave</button>
+        </form>
+    </div>
+
+    <!-- Ride Controls (Owner Only) -->
+    {% if group.owner_id == user_id %}
+    <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
+        <h4 style="margin-bottom: 1rem; font-size: 1rem;">Ride Controls</h4>
+        <input type="text" id="ride-name" placeholder="Ride Name" style="margin-bottom: 0.5rem; padding: 0.5rem; font-size: 0.9rem;">
+        <button id="start-ride-btn" class="btn-success" style="padding: 0.5rem; font-size: 0.9rem; margin-bottom: 0.5rem;">Start Ride</button>
+        <button id="end-ride-btn" style="background: var(--danger); padding: 0.5rem; font-size: 0.9rem; display: none;">End Ride</button>
+    </div>
+    {% endif %}
+
+    <!-- Active Ride Stats -->
+    <div id="active-ride-stats" style="margin-bottom: 1.5rem; display: none;">
+        <h4 style="margin-bottom: 0.5rem; font-size: 1rem; color: var(--success);">Ride in Progress</h4>
+        <div style="font-size: 0.9rem; color: #cbd5e1;">Distance: <span id="stat-dist">0.00</span> km</div>
+        <div style="font-size: 0.9rem; color: #cbd5e1;">Speed: <span id="stat-speed">0.0</span> km/h</div>
+    </div>
+
+    <!-- ETA AI Display -->
+    {% if group.destination_lat %}
+    <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.3);">
+        <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #93c5fd;">AI ETA to {{ group.destination_name }}</h4>
+        <div id="eta-display" style="font-weight: bold; font-size: 1.1rem; color: white;">Calculating...</div>
+    </div>
+    {% endif %}
 
     <h4 style="margin-bottom: 1rem; font-size: 1rem;">Invite a Friend</h4>
-    <form method="POST" action="/invite" style="margin-bottom: 1.5rem;">
+    <form method="POST" action="/invite" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
         <div class="form-group">
             <input type="email" name="email" placeholder="Friend's Email" required style="padding: 0.5rem; font-size: 0.9rem;">
         </div>
@@ -31,6 +64,9 @@
     const GROUP_ID = "{{ group_id }}";
     const USER_ID = "{{ user_id }}";
     const USER_NAME = "{{ user_name }}";
+    const DEST_LAT = "{{ group.destination_lat or '' }}";
+    const DEST_LNG = "{{ group.destination_lng or '' }}";
+    const IS_OWNER = {{ 'true' if group.owner_id == user_id else 'false' }};
 </script>
 
 <script src="{{ url_for('static', filename='js/socket.js') }}"></script>

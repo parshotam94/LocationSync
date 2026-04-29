@@ -16,3 +16,11 @@ def register_socket_events(socketio):
     def location(data):
         insert_location(data)
         emit("receive_location", data, room=data["group_id"])
+        
+    @socketio.on("ride_started")
+    def handle_ride_started(data):
+        emit("ride_started", data, room=data["group_id"])
+        
+    @socketio.on("ride_ended")
+    def handle_ride_ended(data):
+        emit("ride_ended", data, room=data["group_id"])
