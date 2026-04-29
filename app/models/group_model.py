@@ -1,4 +1,5 @@
 from app.extensions import mysql
+import MySQLdb.cursors
 
 def create_group(name, code, owner_id):
     cur = mysql.connection.cursor()
@@ -10,7 +11,7 @@ def create_group(name, code, owner_id):
     return group_id
 
 def get_groups_for_user(user_id):
-    cur = mysql.connection.cursor(dictionary=True)
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
         SELECT g.* FROM `groups` g
         JOIN group_members gm ON g.id = gm.group_id
@@ -21,7 +22,7 @@ def get_groups_for_user(user_id):
     return groups
 
 def get_group_by_code(code):
-    cur = mysql.connection.cursor(dictionary=True)
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT * FROM `groups` WHERE invite_code = %s", (code,))
     group = cur.fetchone()
     cur.close()

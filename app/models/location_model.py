@@ -1,4 +1,5 @@
 from app.extensions import mysql
+import MySQLdb.cursors
 
 def insert_location(data):
     cur = mysql.connection.cursor()
@@ -13,7 +14,7 @@ def insert_location(data):
     cur.close()
 
 def get_locations_for_group(group_id):
-    cur = mysql.connection.cursor(dictionary=True)
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
         SELECT user_id, latitude, longitude, timestamp 
         FROM locations 

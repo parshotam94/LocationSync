@@ -1,4 +1,5 @@
 from app.extensions import mysql
+import MySQLdb.cursors
 
 def create_invitation(group_id, sender_id, receiver_id):
     cur = mysql.connection.cursor()
@@ -13,7 +14,7 @@ def create_invitation(group_id, sender_id, receiver_id):
     cur.close()
 
 def get_pending_invitations(user_id):
-    cur = mysql.connection.cursor(dictionary=True)
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
         SELECT i.id, g.name as group_name, u.name as sender_name
         FROM invitations i
@@ -26,7 +27,7 @@ def get_pending_invitations(user_id):
     return invites
 
 def update_invitation_status(invite_id, status):
-    cur = mysql.connection.cursor(dictionary=True)
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("UPDATE invitations SET status=%s WHERE id=%s", (status, invite_id))
     cur.execute("SELECT * FROM invitations WHERE id=%s", (invite_id,))
     invite = cur.fetchone()
